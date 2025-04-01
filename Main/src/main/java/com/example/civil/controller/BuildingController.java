@@ -1,0 +1,48 @@
+package com.example.civil.controller;
+
+import com.example.civil.entity.Building;
+import com.example.civil.service.BuildingService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/buildings")
+public class BuildingController 
+{
+    private final BuildingService buildingService;
+
+    public BuildingController(BuildingService buildingService) 
+    {
+        this.buildingService = buildingService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Building> createBuilding(@RequestBody Building building) 
+    {
+        return ResponseEntity.ok(buildingService.createBuilding(building));
+    }
+    
+    @GetMapping
+    public ResponseEntity<List<Building>> getAllBuildings() {
+        return ResponseEntity.ok(buildingService.getAllBuildings());
+    }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<Building> getBuildingById(@PathVariable Long id) {
+        return buildingService.getBuildingById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<Building> updateBuilding(@PathVariable Long id, @RequestBody Building building) {
+        return ResponseEntity.ok(buildingService.updateBuilding(id, building));
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBuilding(@PathVariable Long id) {
+        buildingService.deleteBuilding(id);
+        return ResponseEntity.noContent().build();
+    }
+}
